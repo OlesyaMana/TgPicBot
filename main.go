@@ -49,7 +49,7 @@ func main() {
 			user, contains := botUsersMap[update.Message.Chat.ID]
 			if contains {
 				switch update.Message.Text {
-				case "dogs":
+				case "start dogs":
 					err = db.UpdateUser(database, user.Id, db.DogsColumn, 1)
 					if err != nil {
 						panic(err)
