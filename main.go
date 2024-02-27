@@ -5,9 +5,9 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"time"
-
 	"pic/db"
+	"pic/keyboard"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -49,7 +49,12 @@ func main() {
 			user, contains := botUsersMap[update.Message.Chat.ID]
 			if contains {
 				switch update.Message.Text {
-				case "start dogs":
+				case "/start":
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "keyboard")
+					msg.ReplyMarkup = keyboard.GetKeyboard()
+					bot.Send(msg)
+
+				case "start":
 					err = db.UpdateUser(database, user.Id, db.DogsColumn, 1)
 					if err != nil {
 						panic(err)
@@ -57,8 +62,7 @@ func main() {
 
 					user.ReceiveDogs = 1
 					botUsersMap[user.Id] = user
-
-				case "stop dogs":
+				case "stop":
 					err = db.UpdateUser(database, user.Id, db.DogsColumn, 0)
 					if err != nil {
 						panic(err)
